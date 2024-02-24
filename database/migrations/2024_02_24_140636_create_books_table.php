@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_rental_id');
             $table->string('title');
             $table->string('author');
-            $table->enum('status', ['available', 'borrowed']);
+            $table->enum('status', ['available', 'rentaled']);
             $table->timestamps();
         });
     }
