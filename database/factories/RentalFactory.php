@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Book;
 use App\Models\Customer;
+use App\Models\Rental;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,13 +19,17 @@ class RentalFactory extends Factory
      */
     public function definition(): array
     {
-
-        $radomBook = Book::inRandomOrder()->first();
+        do {
+            $randomBook = Book::inRandomOrder()->first();
+            $isUnavailable = Rental::where('book_id', $randomBook->id)
+                ->where('is_returned', false)
+                ->exists();
+        } while ($isUnavailable);
 
         return [
             'customer_id' => Customer::inRandomOrder()->first()->id,
-            'book_id' => $radomBook->id,
-            'is_returned' => $radomBook->status === 'available' ? true : false,
+            'book_id' => $randomBook->id,
+            'is_returned' => fake()->boolean(75),
         ];
     }
 }

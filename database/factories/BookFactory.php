@@ -19,7 +19,7 @@ class BookFactory extends Factory
         return [
             'title' => fake()->sentence(),
             'author' => fake()->name(),
-            'status' => fake()->randomElement(['available', 'rentaled'])
+            'status' => 'available'
         ];
     }
 }

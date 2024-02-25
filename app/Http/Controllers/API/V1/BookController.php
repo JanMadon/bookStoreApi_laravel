@@ -1,19 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Search\BookSearch;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, BookSearch $booksQuery)
     {
-        //
+        $type = $request->query('type');
+        $query = $request->query('q');
+
+        if($query && $type) {
+            $booksQuery = $booksQuery->search($request);
+        } else {
+            $booksQuery = Book::with('rentals');
+        }
+        $books = $booksQuery->paginate(20);
+
+       return new BookCollection($books);
     }
 
     /**
@@ -37,7 +52,8 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        BookResource::withoutWrapping();
+        return new BookResource($book);
     }
 
     /**
