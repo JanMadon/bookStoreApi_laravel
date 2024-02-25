@@ -13,21 +13,34 @@ class BookResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+
+    protected $withBorrowedBy;
+
+    public function __construct($resource, $withBorrowedBy = false)
+    {
+        parent::__construct($resource);
+        $this->withBorrowedBy = $withBorrowedBy;
+    }
+
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'title' => $this->title,
             'author' => $this->author,
             'status' => $this->status,
-            'returnedBy1' => $this->rentals->load('customer'),
-            'returnedBy' => $this->returnedBy(
-                $this->rentals->where('is_returned', false)->first()
-            ),
         ];
+
+        if($this->withBorrowedBy){
+            $data['borrowedBy'] = $this->borrowedBy(
+                $this->rentals->where('is_returned', false)->first()
+            );
+        };
+
+        return $data;
     }
 
-    private function returnedBy($rentals)
+    private function borrowedBy($rentals)
     {
 
         if (!$rentals) {

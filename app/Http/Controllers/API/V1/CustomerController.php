@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Resources\CustomerCollection;
+use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 
 class CustomerController extends Controller
@@ -14,31 +16,22 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $customers = Customer::get();
+        return new CustomerCollection($customers); 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCustomerRequest $request)
     {
-        //
+        $request->validated();
+
+        $newCustomer = Customer::create($request->all());
+        return new CustomerResource($newCustomer);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Customer $customer)
     {
-        //
+        $customerResources = new CustomerResource($customer, true);
+        return  $customerResources;
     }
 
     /**

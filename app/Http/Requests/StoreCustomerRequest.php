@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
 class StoreCustomerRequest extends FormRequest
 {
@@ -11,7 +14,7 @@ class StoreCustomerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +25,21 @@ class StoreCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'min:3', 'max:25'],
+            'surname' => ['required', 'string', 'min:3', 'max:25']
         ];
     }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = new JsonResponse([
+            'error' => [
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ],
+        ], 422);
+
+        throw new HttpResponseException($response);
+    }
+    
 }

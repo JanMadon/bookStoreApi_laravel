@@ -28,7 +28,7 @@ class BookController extends Controller
         }
         $books = $booksQuery->paginate(20);
 
-       return new BookCollection($books);
+       return new BookCollection($books, true);
     }
 
     /**
@@ -52,8 +52,8 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        BookResource::withoutWrapping();
-        return new BookResource($book);
+        //BookResource::withoutWrapping();
+        return new BookResource($book, true);
     }
 
     /**

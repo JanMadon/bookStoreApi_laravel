@@ -12,8 +12,20 @@ class BookCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
+    protected $withBorrowedBy;
+
+    public function __construct($resource, $withBorrowedBy = false)
+    {
+        parent::__construct($resource);
+        $this->withBorrowedBy = $withBorrowedBy;
+    }
+
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'data' => $this->collection->map(function ($customer) {
+                return new BookResource($customer, $this->withBorrowedBy);
+            }),
+        ];
     }
 }
