@@ -10,6 +10,11 @@ class Rental extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'book_id',
+        'customer_id',
+        'is_returned'
+    ];
 
     public function book(): BelongsTo
     {
