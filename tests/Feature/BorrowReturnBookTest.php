@@ -6,8 +6,7 @@ use App\Models\Book;
 use App\Models\Customer;
 use App\Models\Rental;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+
 use Tests\TestCase;
 
 class BorrowReturnBookTest extends TestCase

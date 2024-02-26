@@ -38,11 +38,13 @@ class GetBookDetalsTest extends TestCase
                         'id' => $book->id,
                         'title' => $book->title,
                         'author' => $book->author,
+                        'year' => (int) $book->year,
                         'status' => $book->status,
                         'borrowedBy' => [
                             'id' => $customer->id,
                             'name' => $customer->name,
                             'surname' => $customer->surname
+                            
                         ],
                     ]
 

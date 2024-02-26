@@ -49,6 +49,6 @@ class BookController extends Controller
                 response()->json(['message' => 'Book is not currently rented'], 422);
         }
 
-        return response()->json(['message' => 'Action not recognized'], 400);
+        return response()->json(['message' => 'Action not recognized'], 422);
     }
 }
