@@ -11,9 +11,7 @@ use App\Models\Customer;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $customers = Customer::get();
@@ -22,8 +20,6 @@ class CustomerController extends Controller
 
     public function store(StoreCustomerRequest $request)
     {
-        $request->validated();
-
         $newCustomer = Customer::create($request->all());
         return new CustomerResource($newCustomer);
     }
@@ -34,27 +30,28 @@ class CustomerController extends Controller
         return  $customerResources;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        //
+        $updateCustomer = $customer->update($request->all());
+
+        if($updateCustomer){
+            $updatedCustomer = Customer::find($customer->id);
+            return new CustomerResource($updatedCustomer);
+        } else {
+            return response()->json(['message' => 'Failed to update resource'], 500);
+        }
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Customer $customer)
     {
-        //
+        $isDeleted = $customer->delete();
+
+        if($isDeleted){
+            return response()->json(['message' => 'No Content'], 204);
+        } else {
+            return response()->json(['message' => 'Failed to delete resource'], 500);
+        }
+
     }
 }

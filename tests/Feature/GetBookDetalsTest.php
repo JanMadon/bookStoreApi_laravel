@@ -14,7 +14,6 @@ class GetBookDetalsTest extends TestCase
 
     public function test_record_not_found(): void
     {
-
         $response = $this->get('/api/v1/books/1');
 
         $response->assertStatus(404);

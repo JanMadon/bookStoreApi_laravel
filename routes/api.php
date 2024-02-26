@@ -20,11 +20,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'v1'], function(){
-    
-    Route::apiResource('books', BookController::class);
-    Route::apiResource('customers', CustomerController::class);
+Route::group(['prefix' => 'v1'], function () {
+
+    Route::controller(BookController::class)
+        ->group(function () {
+            Route::get('/books', 'index')->name('books.list');
+            Route::get('/books/{book}', 'show')->name('book.show');
+            Route::patch('/books/{book}', 'updateStatus')->name('book.update');
+        });
+
+    Route::controller(CustomerController::class)
+        ->group( function () {
+            Route::get('/customers', 'index')->name('customers.list');
+            Route::post('/customers', 'store')->name('customers.create');
+            Route::get('/customers/{customer}', 'show')->name('customers.show');
+            Route::put('/customers/{customer}', 'update')->name('customers.update');
+            Route::delete('/customers/{customer}', 'destroy')->name('customers.delete');
+        });
 });
-
-
-

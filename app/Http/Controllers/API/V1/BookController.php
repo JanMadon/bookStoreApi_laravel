@@ -9,74 +9,47 @@ use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Search\BookSearch;
+use App\Service\BorrowReturnBookService;
 use Illuminate\Http\Request;
+
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request, BookSearch $booksQuery)
     {
         $type = $request->query('type');
         $query = $request->query('q');
 
-        if($query && $type) {
+        if ($query && $type) {
             $booksQuery = $booksQuery->search($request);
         } else {
             $booksQuery = Book::with('rentals');
         }
         $books = $booksQuery->paginate(20);
 
-       return new BookCollection($books, true);
+        return new BookCollection($books, true);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreBookRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Book $book)
     {
-        //BookResource::withoutWrapping();
         return new BookResource($book, true);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
+    public function updateStatus(UpdateBookRequest $request, Book $book, BorrowReturnBookService $bookService)
     {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBookRequest $request, Book $book)
-    {
-        //
-    }
+        if ($request->action === 'borrow') {
+            return $bookService->borrowBook($book, $request->customerId) ?
+                response()->json(['message' => 'Book borrowed successfully']) :
+                response()->json(['message' => 'Book is not available for borrowing'], 422);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Book $book)
-    {
-        //
+        } elseif ($request->action === 'return') {
+            return $bookService->returnBook($book, $request->customerId) ?
+                response()->json(['message' => 'Book returned successfully']) :
+                response()->json(['message' => 'Book is not currently rented'], 422);
+        }
+
+        return response()->json(['message' => 'Action not recognized'], 422);
     }
 }
