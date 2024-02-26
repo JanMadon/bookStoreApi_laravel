@@ -1,66 +1,112 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Simple Book Rental API
+### Introduction
+API zostało zaimplementowane w frameworku Laravel, umożliwia wypożyczanie książek oraz zarządzanie klientami.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Endpointy
+1. Listowanie książek z paginacją
+Endpoint: (GET) /api/v1/books
+Query:
+    ?page (opcjonalny): Numer strony dla paginacji (domyślnie 1)
+    ?type=book&q=phrase (opcjonalny): Wyszukiwanie książek po tytule lub autorze (type=book) lub osobie, która ją posaida (type=customer)
+Response:
+    status: 200
+        Lista książek z paginacją, każda książka zawiera:
+        id, title, author,year, status (available/rentaled), borrowedBy
 
-## About Laravel
+2. Szczegóły książki
+Endpoint:(GET) /api/v1/books/{book_id}
+Response:
+    status: 200 
+        Szczegóły książki zawierające:
+        id, title, author, year, status (available/rentaled), borrowedBy
+    status: 404
+        message: Record not found.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+3. Lista klientów
+Endpoint: (GET) /api/v1/customers
+Response:
+    status: 200
+        Lista klientów zawierająca:
+        id, name, surname
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+4. Szczegóły klienta
+Endpoint: (GET) /api/v1/customers/{customer_id}
+Response:
+    status: 200
+        Szczegóły klienta zawierające:
+        id, name, surname, lista wypożyczonych książek
+    status: 404
+        message: Record not found.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+5. Dodawanie klienta
+Endpoint: (POST) /api/v1/customers
 
-## Learning Laravel
+Body:
+    name: Imię
+    surname: Nazwisko
+Response:
+    status: 201, body: JSON obiekt klienta 
+    status: 422, body: message{error}
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+6. Edycja klienta
+Endpoint: (PUT) /api/v1/customers/{customer_id}
+Body:
+    name: Imię
+    surname: Nazwisko
+Response:
+    status: 201, body: JSON obiekt klienta 
+    status: 500, body: message{error}
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+7. Usuwanie klienta
+Endpoint: (DELETE) /api/v1/customers/{customer_id}
+Response:
+    status: 204, body: JSON obiekt klienta
+    status: 500, body: message{error}
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+8. Wypożyczanie / Oddawanie książki
+Endpoint: (PATCH) /api/v1/books/{book_id}
+Body: 
+    customerId: id posiadacza książki
+    action: ("borrow" lub "return") wypożyczanie / oddawanie
+Response:
+    status: 200, body: potwierdzenie
+    status: 422, body: message{error} 
 
-## Laravel Sponsors
+Uwagi
+W przypadku błędów, API zwraca odpowiedzi w formacie JSON z informacjami o błędzie.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Routes
+    ![Routes](screenshots/routes.png)
 
-### Premium Partners
+## Testy
+    Todatkowo do zadania wykonano feature testy
+    > php artisan test
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    ![Tests](screenshots/tests.png)
 
-## Contributing
+## Installation Process
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Clone the repository:
 
-## Code of Conduct
+    git clone https://github.com/JanMadon/bookStoreApi_laravel
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Navigate to the project directory:
+    cd bookStoreApi_laravel
 
-## Security Vulnerabilities
+### Copy the .env.example file to .env 
+    cp .env.example .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Install PHP dependencies using Composer:
+    composer install
 
-## License
+### Generate the Laravel application key:
+    php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Seed your database with data
+    php artisan db:seed
+
+### Start the development server:
+    php artisan serve
+
+The application will be accessible at http://localhost:8000.
+
