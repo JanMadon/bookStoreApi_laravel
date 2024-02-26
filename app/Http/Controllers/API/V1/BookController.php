@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
@@ -50,6 +49,6 @@ class BookController extends Controller
                 response()->json(['message' => 'Book is not currently rented'], 422);
         }
 
-        return response()->json(['message' => 'Action not recognized'], 422);
+        return response()->json(['message' => 'Action not recognized'], 400);
     }
 }
