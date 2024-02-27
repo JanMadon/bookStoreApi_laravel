@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Cache;
 
 class CustomerController extends Controller
 {
@@ -21,7 +22,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::get();
+        $customers = Cache::remember('customers_all', 600 , function () {
+            return Customer::get();
+        });
+
         return new CustomerCollection($customers);
     }
 
@@ -65,10 +69,15 @@ class CustomerController extends Controller
      *     @OA\Response(response=404, description="Customer not found"),
      * )
      */
-    public function show(Customer $customer)
+    public function show(int $customerId) // należy dodać pobierać id a nie ninstacje elogwienta
+                                        // inacej catch nie ma sensu
     {
-        $customerResources = new CustomerResource($customer, true);
-        return  $customerResources;
+        $key = 'customer.' . $customerId;
+        $customerResource = Cache::remember($key, 300, function () use ($customerId) {
+            return new CustomerResource(Customer::find($customerId), true);
+        });
+
+        return  $customerResource;
     }
 
     /**

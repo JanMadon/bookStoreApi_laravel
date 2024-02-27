@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+   // Cache::add('key', 'siema', 10);
+    $cache = Cache::get('key');
+
+    dd($cache);
+
     return view('welcome');
 });
