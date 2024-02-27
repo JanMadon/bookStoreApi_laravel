@@ -29,12 +29,12 @@ Route::group(['prefix' => 'v1'], function () {
             Route::patch('/books/{book}', 'updateStatus')->name('book.update');
         });
 
-    Route::controller(CustomerController::class)
-        ->group( function () {
+     Route::middleware('ensureJsno')->controller(CustomerController::class)
+         ->group( function () {
             Route::get('/customers', 'index')->name('customers.list');
             Route::post('/customers', 'store')->name('customers.create');
             Route::get('/customers/{customer}', 'show')->name('customers.show');
             Route::put('/customers/{customer}', 'update')->name('customers.update');
             Route::delete('/customers/{customer}', 'destroy')->name('customers.delete');
-        });
+         });
 });

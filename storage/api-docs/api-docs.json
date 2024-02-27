@@ -1,0 +1,278 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Book Store API",
+        "contact": {
+            "email": "jan.madon@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get a list of books with pagination data",
+                "operationId": "55439107e6c0a8ac02abc49f28dce033",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Search by book(title, author) or customer(name, surname)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "book",
+                                "customer"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "phrase",
+                        "in": "query",
+                        "description": "Search query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/v1/books/{bookId}": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get a single book with customer who it have (if have)",
+                "operationId": "af9317deef270bde8c4bda134db7abe5",
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "description": "ID of the book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Customer not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Borrow or return book",
+                "operationId": "623e1f53ad51d7d95b8735c70abdf050",
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "description": "ID of the book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "JSON data representing customer and action(borrow/return)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "customerId": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "action": {
+                                        "type": "string",
+                                        "example": "borrow"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "The book already has this status"
+                    }
+                }
+            }
+        },
+        "/api/v1/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get a list of customers",
+                "operationId": "e015022fbbdcf7cbbd2ac497f12256cc",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create a new customer",
+                "operationId": "c876af97312b2e46544b63a784666f68",
+                "requestBody": {
+                    "description": "JSON data representing the new customer",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Johny"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Bravo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Customer created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error or other client error"
+                    }
+                }
+            }
+        },
+        "/api/v1/customers/{customerId}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get a single customer by ID with list of borrow books",
+                "operationId": "6b18db4a0b829893acc55230760e4060",
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "description": "ID of the customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Customer not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Delete castumer",
+                "operationId": "f7e2b571e9f1b2a04a596a2f6c85200a",
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "description": "ID of the customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Customer not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/customers/1/{customerId}": {
+            "put": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Upade customer data",
+                "operationId": "35f176fcef30e1cdfc201d17bcf1edfe",
+                "parameters": [
+                    {
+                        "name": "customerIda",
+                        "in": "path",
+                        "description": "ID of the customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "JSON data representing the new customer",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "new name"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "new surname"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Customer not found"
+                    }
+                }
+            }
+        }
+    }
+}
