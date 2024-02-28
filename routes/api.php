@@ -23,18 +23,26 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1'], function () {
 
     Route::controller(BookController::class)
+        ->middleware('auth:sanctum')
         ->group(function () {
             Route::get('/books', 'index')->name('books.list');
             Route::get('/books/{book}', 'show')->name('book.show');
             Route::patch('/books/{book}', 'updateStatus')->name('book.update');
         });
 
-     Route::middleware('ensureJsno')->controller(CustomerController::class)
-         ->group( function () {
+     Route::controller(CustomerController::class)
+        ->middleware('auth:sanctum')
+        ->group( function () {
             Route::get('/customers', 'index')->name('customers.list');
-            Route::post('/customers', 'store')->name('customers.create');
+            Route::middleware('abilities:create')->post('/customers', 'store')->name('customers.create');
             Route::get('/customers/{customer}', 'show')->name('customers.show');
-            Route::put('/customers/{customer}', 'update')->name('customers.update');
-            Route::delete('/customers/{customer}', 'destroy')->name('customers.delete');
+            Route::middleware('abilities:update')->put('/customers/{customer}', 'update')->name('customers.update');
+            Route::middleware('abilities:delete')->delete('/customers/{customer}', 'destroy')->name('customers.delete');
          });
 });
+
+// user token:     3|ANoW0YUZLOGDoh5wv2nfIhi4T2u5v6GDonJJX0E9cc3a4350
+// admin token:    2|jkdc9Zk9J3Z9uAYbsggEjfBMneLSlfI2R8toceslc079a001
+// w postman dajemy Authorization->Bearer Token i wklejamy token.
+// uzytkownik tworzy się po uderzeniu GET na /gettoken
+// w pliku web.php jest tworzenie usera

@@ -1,7 +1,8 @@
 <?php
 
-use App\Models\Book;
-use Illuminate\Support\Facades\Cache;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,4 +22,39 @@ Route::get('/', function () {
     info('created customer');
 
     return view('welcome');
+});
+
+
+
+Route::get('/gettoken', function() {
+
+    $credentionals = [
+        'email' => 'user@test.pl',
+        'password' => 'password'
+    ];
+
+    if(!Auth::attempt($credentionals)) { //TODO sprawdz do czego jest attempt
+        $user = new User();
+        
+        $user->name = 'Zbyszek';
+        $user->email = $credentionals['email'];
+        $user->password = Hash::make($credentionals['password']);
+        $user->save();
+        dd(Auth::attempt($credentionals));
+    }
+
+    if(Auth::attempt($credentionals)){
+        /** @var \App\Models\MyUserModel $user **/
+        $user = Auth::user();
+        $adminToken = $user->createToken('admin-token', ['read']);  //['create', 'update', 'delete']
+
+        return [
+            'user' => 'user -> read only',
+            'user' => $adminToken->plainTextToken
+        ];
+
+
+    }
+
+
 });

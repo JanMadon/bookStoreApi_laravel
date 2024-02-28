@@ -26,7 +26,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
-        });
+        }); // limit zaputań do api na minutę (przez danegu użytkownika/z danego ip)
 
         $this->routes(function () {
             Route::middleware('api')
