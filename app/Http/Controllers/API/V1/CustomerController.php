@@ -22,7 +22,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Cache::remember('customers_all', 600 , function () {
+        $customers = Cache::remember('customers_all', 60*60*24 , function () {
             return Customer::get();
         });
 
