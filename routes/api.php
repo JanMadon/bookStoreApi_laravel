@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\BookController;
 use App\Http\Controllers\API\V1\CustomerController;
+use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
+
+    Route::post('/users', [UserController::class, 'create'])->name('user.create');
 
     Route::controller(BookController::class)
         ->middleware('auth:sanctum')
@@ -43,6 +46,7 @@ Route::group(['prefix' => 'v1'], function () {
 
 // user token:     3|ANoW0YUZLOGDoh5wv2nfIhi4T2u5v6GDonJJX0E9cc3a4350
 // admin token:    2|jkdc9Zk9J3Z9uAYbsggEjfBMneLSlfI2R8toceslc079a001
+
 // w postman dajemy Authorization->Bearer Token i wklejamy token.
 // uzytkownik tworzy się po uderzeniu GET na /gettoken
 // w pliku web.php jest tworzenie usera
