@@ -1,4 +1,6 @@
 # Simple Book Rental API
+TODO jest problem w przetrzymywaniu w cache pojedyczego customera (chyba nie przegodzi testu delete bo pobiera go z cacha -> trzeba by akutalizować bufor przy każdym usuniecu???)  
+
 ### Introduction
 API zostało zaimplementowane w frameworku Laravel, umożliwia wypożyczanie książek oraz zarządzanie klientami.
 

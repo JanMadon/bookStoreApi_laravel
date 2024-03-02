@@ -69,15 +69,16 @@ class CustomerController extends Controller
      *     @OA\Response(response=404, description="Customer not found"),
      * )
      */
-    public function show(int $customerId) // należy dodać pobierać id a nie ninstacje elogwienta
+    public function show(Customer $customer) // należy dodać pobierać id a nie ninstacje elogwienta
                                         // inacej catch nie ma sensu
     {
-        $key = 'customer.' . $customerId;
-        $customerResource = Cache::remember($key, 300, function () use ($customerId) {
-            return new CustomerResource(Customer::find($customerId), true);
-        });
-
-        return  $customerResource;
+        // Cache::clear();
+        // $key = 'customer.' . $customerId;
+        // $customerResource = Cache::remember($key, 300, function () use ($customerId) {
+        //     return new CustomerResource(Customer::find($customerId), true);
+        // });
+        // return  $customerResource;
+        return new CustomerResource($customer, true);
     }
 
     /**
